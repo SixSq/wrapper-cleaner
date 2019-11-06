@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -e
 
 help () {
   echo " !! Missing arguments !! "
@@ -6,7 +6,7 @@ help () {
 }
 
 #docker login
-echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+echo ${SIXSQ_DOCKER_PASSWORD} | docker login -u ${SIXSQ_DOCKER_USERNAME} --password-stdin
 
 DOCKER_ORG=sixsq
 DOCKER_IMAGE=wrapper-cleaner
