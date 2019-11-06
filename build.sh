@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+
+sudo systemctl restart docker
+
 help () {
   echo " !! Missing arguments !! "
   echo "Run: ./build.sh <tag-name>"
