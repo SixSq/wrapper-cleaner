@@ -1,0 +1,29 @@
+language: minimal
+dist: xenial
+sudo: required
+services:
+- docker
+addons:
+  apt:
+    packages:
+    - docker-ce
+env:
+  global:
+  - secure: G5+KAXtapaRhIvbxJG4lfp3qBI1Sa/qxyH1pqq05Ergmljkk7zk+EP2PW469HfAHmtEHrS88Nm5ME1a7FOFK7jM1evKh/eyl3Lpvje9yuxN+NcBDtZPS5x/rabnpgdXImV1bP8HgChPVJuOlE266aYmtnXiukX5OILxLsL+jUBthV73y2P+MwHMP+MRLnu6VY6WTQrb9Rb9MX5X2NY8Ofng6QZSuObbrJ/j6P8bol0p9fGRdor9n+4osvnYdHvx3FcLO983R99VTFZoKshk/R0f6m+zE4BQEy2lTfw1KI3RpXbAt/9j3y5DXXfcYbfp/lJX0mVyaHNGV7D6t7DoWBYud1XkJWQ8BQIgf1rmKrwd8ooKJVpMmyTwb/SiDY99WrJtzXVwRksK5YxHWkt+iwiFqngBwD792Wnl4V5h8MFHqR6F5GlI5FBHL8N6RqhMGW7C0VyXfRtEEfNr9wx3LNgzR1Di5qknViVNjov37qeOjPGRigo/xwWiODNAWfxE1v+oxGjpKsBJen6pAEtEPq4AJ4+6m/rmDuzgYjDFAY7VNhdSok4Meb49ShpTC7BQ25sZdarxkbaLtaq7dV6f7U3HrdlumiVdIrTdqK56jYMA2eY/DpoZ5eu1YwnmWBgcJTN/OaG+46giRnXe6aHg2Nd1Uu/7fFuG+eESaNmCSkHM=
+  - secure: pMz8/UuD1/tNyaw1jvZZjtI7YZiTIhLjftjNv3L3BQRcHaKZhJ+mwyRW5hcU3eROLS06Oor7YE/DAHEVwYHVEvjt+HuC/3ldBQYVM2+8gJgbe8WJnkC9EChERE8vm9lLYvy1bKVBFx9QxWNezk9nz8LvJR9JCamuvoJz6S2ClZqRktw8ZjgC3PMLs1m/kiDBLXS0ynLU4Krm3H6bX6bho4Z+YZUzievX6sPhAxUP0mdt66Th8boNxJbMbIOhdtpb5tUfxHD0V59qANNRBh/uCj5qp7qBEpNpOr+GCNsuegk/kvLUtNHGfGkR+QD1o9cpPUS4InDn0ZHIaSl3UW8V6TpKfJsoGjtdJN3OO90/hVxW5RyaaeD8DB/v5p11y8dLJXukGom9xq1ps9FoXNWnVVZ8vHYI5WTl+1nR8ZSs1D7U+YqXoSV/fp7LEeg5Y6bvCHKViS0W5mccug5dlPUDkOjSkD7x31UksT3IqIqdwuYwICE1CSMGhGMT+8Ldc+H8FEDDf/6pYN4fHl75rzIXQsFsr6SWIK4UirRWQCjX2YQqRTBVHB0rXNwI3Jxn3dzlBjkN9byIbxfvKVXsCmgIkYEJmiCdsrZo7EJf4WrcdCE3AmpkdRrENGtrUIG5N4peSEBTmuRZtgXeKGXLtBp0G/16Op7y2V2FIvGf0kaFdkc=
+before_install:
+- echo "options timeout:5" | sudo tee -a /etc/resolvconf/resolv.conf.d/tail
+- echo "options attempts:5" | sudo tee -a /etc/resolvconf/resolv.conf.d/tail
+- sudo service resolvconf restart
+- echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+- sudo systemctl restart docker
+- sudo docker run --privileged linuxkit/binfmt:v0.6
+install:
+- docker image pull moby/buildkit:master
+before_script:
+- rm -Rf target/*.tar
+- mkdir -p target
+jobs:
+  include:
+  - stage: build
+    script: "./build.sh master"
