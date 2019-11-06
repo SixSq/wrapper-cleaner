@@ -19,7 +19,7 @@ then
 	help
 	exit 1
 else
-	manifest=${DOCKER_ORG}/${DOCKER_IMAGE}:${tag_name}
+	manifest=${DOCKER_ORG}/${DOCKER_IMAGE}:${1}
 	echo "  --  Building ${manifest} for platforms: ${platforms}..."
 fi
 
