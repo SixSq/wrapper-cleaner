@@ -23,7 +23,6 @@ else
 	echo "  --  Building ${manifest} for platforms: ${platforms}..."
 fi
 
-
 rm -Rf target/*.tar
 mkdir -p target
 
@@ -35,7 +34,7 @@ do
 	       --frontend dockerfile.v0 \
 	       --opt platform=linux/${platform} \
 	       --opt filename=./Dockerfile \
-	       --output type=tar,name=${manifest}-${platform},dest=/tmp/work/target/${DOCKER_IMAGE}-${platform}.docker.tar \
+	       --output type=docker,name=${manifest}-${platform},dest=/tmp/work/target/${DOCKER_IMAGE}-${platform}.docker.tar \
 	       --local context=/tmp/work \
 	       --local dockerfile=/tmp/work \
 	       --progress plain
@@ -45,7 +44,6 @@ do
 
 	# Push platform specific image to docker hub
 	docker push ${manifest}-${platform}
-
         
 	docker manifest create "${manifest}" "${manifest}-${platform}"
 
