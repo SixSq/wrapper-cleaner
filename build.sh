@@ -54,7 +54,7 @@ done
 docker manifest create "${manifest_args[@]}"
 
 # Annotate manifest
-for platform in "${platforms[@]}"; do
+for platform in $platforms; do
     docker manifest annotate ${manifest} ${manifest}-${platform} --arch ${platform}
 done
 
