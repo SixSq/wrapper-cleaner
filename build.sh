@@ -1,9 +1,5 @@
 #!/bin/bash -e
 
-echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-
-sudo systemctl restart docker
-
 help () {
   echo " !! Missing arguments !! "
   echo "Run: ./build.sh <tag-name>"
@@ -30,6 +26,8 @@ fi
 rm -Rf target/*.tar
 mkdir -p target
 
+manifest_args=(${manifest})
+
 for platform in $platforms
 do
 	# Build docker image
@@ -48,13 +46,19 @@ do
 
 	# Push platform specific image to docker hub
 	docker push ${manifest}-${platform}
+
+        manifest_args+=("${manifest}-${platform}")
         
-	docker manifest create "${manifest}" "${manifest}-${platform}"
-
-	docker manifest annotate ${manifest} ${manifest}-${platform} --arch ${platform}
-
-	docker manifest push --purge ${manifest}
 done
 
+docker manifest create "${manifest_args[@]}"
+
+# Annotate manifest
+for platform in "${platforms[@]}"; do
+    docker manifest annotate ${manifest} ${manifest}-${platform} --arch ${platform}
+done
+
+# Push manifest to docker hub
+docker manifest push --purge ${manifest}
 
 rm -Rf target
