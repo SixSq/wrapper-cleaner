@@ -5,7 +5,8 @@ help () {
   echo "Run: ./build.sh <tag-name>"
 }
 
-docker login
+#docker login
+echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
 
 DOCKER_ORG=sixsq
 DOCKER_IMAGE=wrapper-cleaner
